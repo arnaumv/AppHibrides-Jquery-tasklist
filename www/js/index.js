@@ -22,19 +22,31 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
-    // Cordova is now initialized. Have fun!
     console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
-    //document.getElementById('deviceready').classList.add('ready');
-    $("#addTask").on("click", function() {
-        // Coloca aquí el código que deseas ejecutar cuando se hace clic en el botón
-        
-    var newListItem = $('<li><a href="#page4">PAGE</a></li>');
 
-    // Agregar el nuevo elemento al listview
-    $('#homePage ul[data-role="listview"]').append(newListItem);
+    $("#addTask").on("click", afegir_tasca);
+    $("#delTask").on("click", eliminar_tasca);
+}
 
-    // Refrescar el diseño de jQuery Mobile después de agregar el nuevo elemento
-    $('#homePage ul[data-role="listview"]').listview('refresh');
+function afegir_tasca() {
+    var text = prompt("Afegir tasca:");
+    if (text !== null && text.trim() !== "") {
+        var $elem = $("<li><a>" + text + "</a></li>");
+        $("ul").append($elem);
 
-    });
+        // Refrescar el diseño de jQuery Mobile después de agregar el nuevo elemento
+        $('ul[data-role="listview"]').listview('refresh');
+    }
+}
+
+function eliminar_tasca() {
+    var text = prompt("Eliminar tasca:");
+    if (text !== null && text.trim() !== "") {
+        $("ul li a").filter(function() {
+            return $(this).text() === text;
+        }).closest("li").remove();
+
+        // Refrescar el diseño de jQuery Mobile después de eliminar el elemento
+        $('ul[data-role="listview"]').listview('refresh');
+    }
 }
