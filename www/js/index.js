@@ -25,19 +25,41 @@ function onDeviceReady() {
     console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
 
     $("#addTask").on("click", afegir_tasca);
-    $("#delTask").on("click", eliminar_tasca);
 }
 
 function afegir_tasca() {
     var text = prompt("Afegir tasca:");
     if (text !== null && text.trim() !== "") {
-        var $elem = $("<li><a>" + text + "</a></li>");
+        var $elem = $("<li><a href='#" + text + "'>" + text + "</a></li>");
+        var $deleteButton = $("<button class='delTask'>Delete</button>");
+
+        $elem.append($deleteButton); // Afegeix el botó d'eliminar al final del <li>
         $("ul").append($elem);
 
-        // Refrescar el diseño de jQuery Mobile después de agregar el nuevo elemento
+        var $page = $("<div data-role='page' id='" + text + "'></div>");
+        var $header = $("<div data-role='header'><a href='#' data-icon='back' data-rel='back' title='Go back'>Back</a><h1>" + text + "</h1></div>");
+        var $content = $("<div class='ui-content'><p>This is " + text + "</p></div>");
+        var $footer = $("<div data-role='footer' data-position='fixed'><h1>" + text + "</h1></div>");
+
+        $page.append($header);
+        $page.append($content);
+        $page.append($footer);
+
+        $("body").append($page);
+
         $('ul[data-role="listview"]').listview('refresh');
+
+        $deleteButton.on("click", function() {
+            var $li = $(this).parent(); // Obté el <li> pare
+            var taskID = $li.find("a").attr("href").replace("#", "");
+
+            $li.remove();
+            $("#" + taskID).remove();
+            $('ul[data-role="listview"]').listview('refresh');
+        });
     }
 }
+
 
 function eliminar_tasca() {
     var text = prompt("Eliminar tasca:");
