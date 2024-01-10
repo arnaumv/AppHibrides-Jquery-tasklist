@@ -26,14 +26,17 @@ function onDeviceReady() {
 
     $("#addTask").on("click", afegir_tasca);
 }
-
 function afegir_tasca() {
     var text = prompt("Afegir tasca:");
     if (text !== null && text.trim() !== "") {
         var $elem = $("<li><a href='#" + text + "'>" + text + "</a></li>");
-        var $deleteButton = $("<button class='delTask'>Delete</button>");
 
-        $elem.append($deleteButton); // Afegeix el botó d'eliminar al final del <li>
+        var $deleteBtn = $("<button class='deleteTask'>Delete</button>");
+        var $editBtn = $("<button class='editTask'>Edit</button>");
+
+        $elem.append($deleteBtn);
+        $elem.append($editBtn);
+
         $("ul").append($elem);
 
         var $page = $("<div data-role='page' id='" + text + "'></div>");
@@ -48,18 +51,20 @@ function afegir_tasca() {
         $("body").append($page);
 
         $('ul[data-role="listview"]').listview('refresh');
-
-        $deleteButton.on("click", function() {
-            var $li = $(this).parent(); // Obté el <li> pare
-            var taskID = $li.find("a").attr("href").replace("#", "");
-
-            $li.remove();
-            $("#" + taskID).remove();
-            $('ul[data-role="listview"]').listview('refresh');
-        });
     }
 }
+$(document).on("click", ".deleteTask", function() {
+    $(this).closest("li").remove();
+    // Aquí podrías agregar lógica adicional si también deseas eliminar la página correspondiente
+});
 
+$(document).on("click", ".editTask", function() {
+    var newText = prompt("Edit task:", $(this).siblings('a').text());
+    if (newText !== null && newText.trim() !== "") {
+        $(this).siblings('a').text(newText);
+    }
+    // Aquí podrías agregar lógica adicional si también deseas editar la página correspondiente
+});
 
 function eliminar_tasca() {
     var text = prompt("Eliminar tasca:");
